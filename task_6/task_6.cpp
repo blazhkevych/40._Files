@@ -1,13 +1,13 @@
-/*
-	6. Написать программу, которая считывает текст из файла и
-выводит в другой файл слова из этого текста, расположив их
-в порядке убывания частоты их появления. При этом для
-каждого слова необходимо напечатать число его появлений
-в исходном файле.
+п»ї/*
+	6. РќР°РїРёСЃР°С‚СЊ РїСЂРѕРіСЂР°РјРјСѓ, РєРѕС‚РѕСЂР°СЏ СЃС‡РёС‚С‹РІР°РµС‚ С‚РµРєСЃС‚ РёР· С„Р°Р№Р»Р° Рё
+РІС‹РІРѕРґРёС‚ РІ РґСЂСѓРіРѕР№ С„Р°Р№Р» СЃР»РѕРІР° РёР· СЌС‚РѕРіРѕ С‚РµРєСЃС‚Р°, СЂР°СЃРїРѕР»РѕР¶РёРІ РёС…
+РІ РїРѕСЂСЏРґРєРµ СѓР±С‹РІР°РЅРёСЏ С‡Р°СЃС‚РѕС‚С‹ РёС… РїРѕСЏРІР»РµРЅРёСЏ. РџСЂРё СЌС‚РѕРј РґР»СЏ
+РєР°Р¶РґРѕРіРѕ СЃР»РѕРІР° РЅРµРѕР±С…РѕРґРёРјРѕ РЅР°РїРµС‡Р°С‚Р°С‚СЊ С‡РёСЃР»Рѕ РµРіРѕ РїРѕСЏРІР»РµРЅРёР№
+РІ РёСЃС…РѕРґРЅРѕРј С„Р°Р№Р»Рµ.
 
-Путь к входному/выходному файлу задает пользователь !
+РџСѓС‚СЊ Рє РІС…РѕРґРЅРѕРјСѓ/РІС‹С…РѕРґРЅРѕРјСѓ С„Р°Р№Р»Сѓ Р·Р°РґР°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ !
 3.10.32
-НЕ РАБОТАЕТ !!!
+РќР• Р РђР‘РћРўРђР•Рў !!!
 */
 
 #include <iostream>
@@ -32,7 +32,7 @@ struct FIleStat
 
 int main()
 {
-	FIleStat* arrStruct = new FIleStat[1000];
+	FIleStat* arrFileStat = new FIleStat[1000];
 
 	char fileNameRead[MAX_PATH];
 	cout << "Enter path name: ";
@@ -53,10 +53,10 @@ int main()
 
 
 	/*
-	Попытка сичтать текстовый файл целиком, построчно
+	РџРѕРїС‹С‚РєР° СЃРёС‡С‚Р°С‚СЊ С‚РµРєСЃС‚РѕРІС‹Р№ С„Р°Р№Р» С†РµР»РёРєРѕРј, РїРѕСЃС‚СЂРѕС‡РЅРѕ
 	char* buffer_for_stringTest = new char[1000];
-	int lenght = _filelength(_fileno(f_read)); // _fileno (получает дескриптор), _filelength (дает размер файла в байтах)
-	char* bufForAllFIle = new char[lenght]; 
+	int lenght = _filelength(_fileno(f_read)); // _fileno (РїРѕР»СѓС‡Р°РµС‚ РґРµСЃРєСЂРёРїС‚РѕСЂ), _filelength (РґР°РµС‚ СЂР°Р·РјРµСЂ С„Р°Р№Р»Р° РІ Р±Р°Р№С‚Р°С…)
+	char* bufForAllFIle = new char[lenght];
 	memset(bufForAllFIle, 0, lenght);
 	while (!feof(f_read))
 	{
@@ -71,8 +71,8 @@ int main()
 		perror("Error opening");
 		return 0;
 	}
-	int lenght = _filelength(_fileno(f1)); // _fileno (получает дескриптор), _filelength (дает размер файла в байтах)
-	char* bufForDataFile = new char[lenght]; // буфер на весь файл
+	int lenght = _filelength(_fileno(f1)); // _fileno (РїРѕР»СѓС‡Р°РµС‚ РґРµСЃРєСЂРёРїС‚РѕСЂ), _filelength (РґР°РµС‚ СЂР°Р·РјРµСЂ С„Р°Р№Р»Р° РІ Р±Р°Р№С‚Р°С…)
+	char* bufForDataFile = new char[lenght]; // Р±СѓС„РµСЂ РЅР° РІРµСЃСЊ С„Р°Р№Р»
 	memset(bufForDataFile, 0, lenght);
 	fread(bufForDataFile, sizeof(char), lenght, f1);
 	cout << bufForDataFile << endl;
@@ -87,7 +87,7 @@ int main()
 		fgets(buffer_for_string, 1000, f_read);
 
 		// Establish string and get the first token:
-		token = strtok_s(buffer_for_string, seps, &next_token); // "вырезаем" первое слово, передаем остаток дальше
+		token = strtok_s(buffer_for_string, seps, &next_token); // "РІС‹СЂРµР·Р°РµРј" РїРµСЂРІРѕРµ СЃР»РѕРІРѕ, РїРµСЂРµРґР°РµРј РѕСЃС‚Р°С‚РѕРє РґР°Р»СЊС€Рµ
 		words[i] = token;
 		i++;
 		// While there are tokens in "string1" or "string2"
@@ -103,9 +103,16 @@ int main()
 
 				}
 			}
-			//место обработки данных из массива пока его не затерли новой строкой
+		}
+		//РјРµСЃС‚Рѕ РѕР±СЂР°Р±РѕС‚РєРё РґР°РЅРЅС‹С… РёР· РјР°СЃСЃРёРІР° РїРѕРєР° РµРіРѕ РЅРµ Р·Р°С‚РµСЂР»Рё РЅРѕРІРѕР№ СЃС‚СЂРѕРєРѕР№
+		for (int i = 0; i < strlen(buffer_for_string) + 1; i++)
+		{
+			for (int j = 1; j < strlen(buffer_for_string) + 1; j++)
+			{
+				words
+			}
 		}
 	}
-	delete[]arrStruct;
+	delete[]arrFileStat;
 	fclose(f_read);
 }
