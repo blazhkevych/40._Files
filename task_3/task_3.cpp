@@ -5,6 +5,8 @@
 Путь к входному/выходному файлу задает пользователь !
 */
 
+// ГОТОВО.
+
 #include <iostream>
 #include <windows.h>
 using namespace std;

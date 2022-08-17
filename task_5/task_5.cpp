@@ -4,15 +4,13 @@
 используя оператор ^ (поразрядное исключающее или).
 
 Путь к входному/выходному файлу задает пользователь !
-
-НЕ РАБОТАЕТ !!!
-
-3.04.48
 */
 
+// ГОТОВО.
+
 #include <iostream>
-#include <windows.h>
-#include <io.h>
+#include <fstream>
+#include <Windows.h>
 
 using namespace std;
 
@@ -31,26 +29,37 @@ int main()
 	записанных различными функциями вывода, в изображения, отображаемые в окне консоли.
 	*/
 
-	char fileNameRead[MAX_PATH];
-	cout << "Введите путь к файлу для шифрования: ";
-	cin.getline(fileNameRead, MAX_PATH);
-	FILE* f_read{ nullptr };
-	fopen_s(&f_read, fileNameRead, "r");
-	int fileLength = _filelength(_fileno(f_read)); // _fileno (получает дескриптор), _filelength (дает размер файла в байтах)
-	char* bufferForFile = new char[fileLength]; 
-	char key ;
-	cout << "Введите ключ для шифрования: ";
-	cin>>key;
-	for (int i = 0; i < fileLength; i++)
-	{
-		for (size_t j = 0; j < sizeof(key); j++)
-		{
-			bufferForFile[i] = bufferForFile[i] ^ key[j];
-			i++;
-		}
-	}
+	cout << "Введите путь к исходному файлу: "; // 1.txt
+	string fileName{};
+	cin >> fileName;
 
+	cout << "Введите шифр: "; // 111
+	int code{};
+	cin >> code;
 
+	// Открывается  файл на чтение в бинарном режиме: при этом файл должен существовать.
+	ifstream in(fileName, ios::binary | ios::in);
 
-	delete[]bufferForFile;
+	in.seekg(0, ios::end); // Смещение указателя на 0 от конца файла.
+	int length = in.tellg(); // Размер файла.
+	in.seekg(0, ios::beg); // Смещение указателя на на 0 от начала файла.
+
+	char* dataForProcessing = new char[length] {};
+
+	in.read(dataForProcessing, length);
+
+	for (int i = 0; i < length; i++) // Шифруем/дешифруем каждый байт.
+		dataForProcessing[i] ^= code;
+	in.close();
+
+	// Открывается  файл на запись в бинарном режиме : если файл не существует - он будет создан, если файл существует - он будет усечён до нулевой длины
+	ofstream out(fileName, ios::binary | ios::out);
+	out.write(dataForProcessing, length);
+	out.close();
+
+	cout << endl << "Файл успешно зашифрован/расшифрован !" << endl;
+
+	delete[]dataForProcessing;
+
+	return 0;
 }

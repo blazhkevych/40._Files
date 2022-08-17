@@ -7,6 +7,8 @@
 2:54:35
 */
 
+// ГОТОВО.
+
 #include <iostream>
 #include <Windows.h>
 using namespace std;

@@ -8,6 +8,8 @@
 2.57.15
 */
 
+// ГОТОВО.
+
 #include <iostream>
 #include <windows.h>
 #include <stdio.h>

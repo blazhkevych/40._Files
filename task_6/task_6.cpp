@@ -10,109 +10,134 @@
 НЕ РАБОТАЕТ !!!
 */
 
+#include <algorithm>
+#include <fstream>
+#include <iomanip>
 #include <iostream>
-#include <windows.h>
-#include <io.h>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <Windows.h>
+
 using namespace std;
 
-void RussianMessage(const char* str)
+class Word
 {
-	char* p = new char[strlen(str) + 1];
-	CharToOemA(str, p);
-	cout << p;
-	delete[] p;
+public:
+	string word{};
+	int count{ 1 };
+	void Print()
+	{
+		cout << setw(20) << this->word << setw(10) << this->count << endl;
+	}
+};
+
+void WriteWords(ostream& o, const  vector<Word*>& words)
+{
+	for (auto s : words) {
+		o << s->word << " - " << s->count << '\n';
+	}
 }
-
-struct FIleStat
+void WriteWords(ostream&& o, const  vector<Word*>& words)
 {
-	char* word{ nullptr };
-	int* count{ nullptr };
-
-}*fileStat;
+	WriteWords(o, words);
+}
 
 int main()
 {
-	FIleStat* arrFileStat = new FIleStat[1000];
-
-	char fileNameRead[MAX_PATH];
-	cout << "Enter path name: ";
-	cin.getline(fileNameRead, MAX_PATH);
-	FILE* f_read{ nullptr };
-	fopen_s(&f_read, fileNameRead, "r");
-	if (f_read == nullptr)
-	{
-		perror("Error opening");
-		return 0;
-	}
-	char buffer_for_string[1000];
-	char* words[1000]{ nullptr };
-	char seps[] = " ,\t\n";
-	char* token = nullptr;
-	char* next_token = nullptr;
-
-
-
+	SetConsoleCP(1251);
 	/*
-	Попытка сичтать текстовый файл целиком, построчно
-	char* buffer_for_stringTest = new char[1000];
-	int lenght = _filelength(_fileno(f_read)); // _fileno (получает дескриптор), _filelength (дает размер файла в байтах)
-	char* bufForAllFIle = new char[lenght];
-	memset(bufForAllFIle, 0, lenght);
-	while (!feof(f_read))
-	{
-		fgets(buffer_for_stringTest, 1000, f_read);
-		strcat_s(bufForAllFIle,strlen(buffer_for_stringTest)+1, buffer_for_stringTest);
-	}
+	Задает кодовую страницу ввода, используемую консолью, связанной с вызывающим процессом.
+	Консоль использует страницу входного кода для преобразования ввода с клавиатуры
+	в соответствующее символьное значение.
 	*/
-	FILE* f1 = nullptr;
-	fopen_s(&f1, fileNameRead, "rb");
-	if (f1 == nullptr)
+	SetConsoleOutputCP(1251);
+	/*
+	Задает выходную кодовую страницу, используемую консолью, связанной с вызывающим процессом.
+	Консоль использует свою кодовую страницу вывода для преобразования символьных значений,
+	записанных различными функциями вывода, в изображения, отображаемые в окне консоли.
+	*/
+
+	cout << "Введите путь к исходному файлу: "; // 1.txt
+	string fileName{};
+	cin >> fileName;
+
+	ifstream f_read(fileName, ios::in);
+
+	if (!f_read.is_open()) // Если открытие файла завершилось неудачей - выходим.
 	{
-		perror("Error opening");
+		cout << "Error!\n";
 		return 0;
 	}
-	int lenght = _filelength(_fileno(f1)); // _fileno (получает дескриптор), _filelength (дает размер файла в байтах)
-	char* bufForDataFile = new char[lenght]; // буфер на весь файл
-	memset(bufForDataFile, 0, lenght);
-	fread(bufForDataFile, sizeof(char), lenght, f1);
-	cout << bufForDataFile << endl;
 
+	f_read.seekg(0, ios::end); // Смещение файлового указателя на 0 от конца.
+	long long sourceFileSize = f_read.tellg(); // Размер исходного файла.
+	f_read.seekg(0, ios::beg); // Смещение файлового указателя на 0 от начала.
 
+	string str{ istreambuf_iterator<char>(f_read), istreambuf_iterator<char>() }; // Вычитываем весь текстовый файл.
 
+	// Привести все буквы один регистр верхний или нижний.
+	transform(str.begin(), str.end(), str.begin(), tolower);
 
+	vector<Word*> Words;
+	stringstream ss(str);
+	string buf;
 
-	int i{ 0 };
-	while (!feof(f_read))
+	while (ss >> buf)
 	{
-		fgets(buffer_for_string, 1000, f_read);
-
-		// Establish string and get the first token:
-		token = strtok_s(buffer_for_string, seps, &next_token); // "вырезаем" первое слово, передаем остаток дальше
-		words[i] = token;
-		i++;
-		// While there are tokens in "string1" or "string2"
-		while (token != nullptr)
+		int found = buf.find_first_of(" ./*-+~!@#$%^&*()_+`1234567890-=|\\{}[]:\";',./<>?");
+		while (found >= 0)
 		{
-			// Get next token:
-			if (token != nullptr)
+			buf.erase(found, 1);
+			found = buf.find_first_of(" ./*-+~!@#$%^&*()_+`1234567890-=|\\{}[]:\";',./<>?");
+		}
+		if (!buf.empty())
+		{
+			int cap = Words.size();
+			bool coincidence{ false }; // Совпадение.
+			for (int i = 0; i < cap; i++)
 			{
-				token = strtok_s(nullptr, seps, &next_token);
-				if (token) {
-					words[i] = token;
-					i++;
-
+				if (Words[i]->word == buf) // Входящее слово совпало с словом из списка.
+				{
+					Words[i]->count++;
+					coincidence = true;
 				}
 			}
-		}
-		//место обработки данных из массива пока его не затерли новой строкой
-		for (int i = 0; i < strlen(buffer_for_string) + 1; i++)
-		{
-			for (int j = 1; j < strlen(buffer_for_string) + 1; j++)
+			if (coincidence == false) // Если совпадений не было, добавляем.
 			{
-				words
+				//Word* w = new Word{ buf };
+				Words.push_back(new Word{ buf });
 			}
 		}
 	}
-	delete[]arrFileStat;
-	fclose(f_read);
+
+	// Сортировка вектора.
+	for (int startIndex = 0; startIndex < Words.size(); ++startIndex)
+	{
+		int biggerIndex = startIndex;
+
+		for (int currentIndex = startIndex + 1; currentIndex < Words.size(); ++currentIndex)
+		{
+			if (Words[currentIndex]->count > Words[biggerIndex]->count) // Сортировка по убыванию
+				biggerIndex = currentIndex;
+		}
+
+		Word* temp = Words[startIndex];
+		Words[startIndex] = Words[biggerIndex];
+		Words[biggerIndex] = temp;
+	}
+
+	cout << "\tСлово\t" << "Число появлений" << endl;
+	for (int i = 0; i < Words.size(); i++)
+		Words[i]->Print();
+
+	cout << "Введите путь к результирующему файлу: "; // 2.txt
+	string resultFilePath;
+	cin >> resultFilePath;
+
+	// Создаём выходной файловый поток и присоединяем к нему файл, который открывается на запись в текстовом режиме.
+	ofstream out;
+	out.open(resultFilePath, ios::out | ios::trunc);
+
+	WriteWords(out, Words);
 }
