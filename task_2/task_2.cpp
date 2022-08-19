@@ -7,7 +7,7 @@
 2:54:35
 */
 
-// ГОТОВО.
+// НЕ работает.
 
 #include <iostream>
 #include <Windows.h>
@@ -52,7 +52,7 @@ int main()
 				word_count++;
 			}
 
-			if (ch = '\0' || ch == '\n')
+			if (ch == '\n')
 				line_count++;
 		}
 		else

@@ -1,5 +1,4 @@
-1line word
-2line word
-3line word
-4line 
-5line Itogo6strok(vkljuchayaPystyuStroku)&9slov
+ Написать     программу, которая    подсчитывает 
+количество строк
+и количество слов     в текстовом 
+файле.
